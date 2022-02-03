@@ -22,7 +22,6 @@
 
 			uniform sampler2D map;
 
-			uniform float time;
 			uniform float uRandom;
 			uniform float uDepth;
 			uniform float width;
@@ -38,24 +37,16 @@
 			const float YtoZ = 0.83359; // tan( 0.7898090 / 2.0 ) * 2.0;
 
 
-			float random(float n) {
-		        return fract(sin(n) * 43758.5453123);
+			float rand(vec2 co){
+				return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
 			}
 
-		
 
 			void main() {
-
 				vUv = vec2( position.x / width, position.y / height );
 
 				// randomise
-				//float t = time * 0.0000000001;
-				//float ns = perlin(vec2(pindex), 1.0, t);
-				vUv.xy += vec2(random(position.x + pindex + uRandom) - 0.5, random(position.y + pindex + uRandom) - 0.5) * uDepth;
-				//vUv.xy += ns * uDepth * 0.01; //vec2(perlin(vUv.x, 10.0, t));
-
-				//float rndz = (random(pindex) + snoise(vec2(pindex * 0.1, time * 0.1)));
-				//vUv.z += rndz * (random(pindex) * 2.0 * uDepth);				
+				vUv.xy += (vec2(rand(vUv.xy + vec2(pindex) + vec2(uRandom)), rand(vUv.yx + vec2(pindex) + vec2(uRandom))) - 0.5) * uDepth;
 
 				vec4 color = texture2D( map, vUv );
 				float depth = ( color.r + color.g + color.b ) / 3.0;
@@ -80,15 +71,24 @@
 	<script id="fs" type="x-shader/x-fragment">
 
 			uniform sampler2D map;
-
+			uniform float clipX;
+			uniform float clipY;
+			uniform float clipWidthX;
+			uniform float clipWidthY;
 			varying vec2 vUv;
 
 			void main() {
 
 				vec4 color = texture2D( map, vUv );
-				gl_FragColor = vec4( color.r, color.g, color.b, 0.8 );
 
-			
+				color *= step(clipX, vUv.x);
+				color *= step(clipY, vUv.y);
+
+				bool isClipXEdge = (vUv.x >= clipX) && (vUv.x <= clipX + clipWidthX);
+				bool isClipYEdge = (vUv.y >= clipY) && (vUv.y <= clipY + clipWidthY);
+				color = isClipXEdge || isClipYEdge ? (color + vec4(1.0)) : color;
+
+				gl_FragColor = vec4( color.r, color.g, color.b, 1.0 );
 
 			}
 
@@ -160,6 +160,7 @@
 			for (let i = 0; i < numPoints; i++) {
 				indices[i] = i;
 			}
+			console.log("indices:", indices)
 
 			geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
 			geometry.addAttribute('pindex', new THREE.InstancedBufferAttribute(indices, 1, false));
@@ -168,7 +169,7 @@
 
 				uniforms: {
 					'time': { value: 0 },
-					'uRandom': { value: 1.0 },
+					'uRandom': { value: 0.0 },
 					'uDepth': { value: 0.0 },
 
 					'map': { value: texture },
@@ -177,8 +178,12 @@
 					'nearClipping': { value: nearClipping },
 					'farClipping': { value: farClipping },
 
-					'pointSize': { value: 2 },
-					'zOffset': { value: 1000 }
+					'pointSize': { value: 1 },
+					'zOffset': { value: 1500 },
+					'clipX': { value: 0.5 },
+					'clipY': { value: 0.0 },
+					'clipWidthX': { value: 0.001 },
+					'clipWidthY': { value: 0.001 }
 
 				},
 				vertexShader: document.getElementById('vs').textContent,
@@ -198,7 +203,11 @@
 			gui.add(material.uniforms.pointSize, 'value', 1, 10, 1.0).name('pointSize');
 			gui.add(material.uniforms.zOffset, 'value', 0, 4000, 1.0).name('zOffset');
 			gui.add(material.uniforms.uRandom, 'value', 0.0, 1.0, 0.001).name('random');
-			gui.add(material.uniforms.uDepth, 'value', 0.0, 2.0, 0.001).name('depth');
+			gui.add(material.uniforms.uDepth, 'value', 0.0, 1.0, 0.0001).name('depth');
+			gui.add(material.uniforms.clipX, 'value', 0.0, 1.0, 0.001).name('clipX');
+			gui.add(material.uniforms.clipY, 'value', 0.0, 1.0, 0.001).name('clipY');
+			gui.add(material.uniforms.clipWidthX, 'value', 0.0, 1.0, 0.001).name('clipWidthX');
+			gui.add(material.uniforms.clipWidthY, 'value', 0.0, 1.0, 0.001).name('clipWidthY');
 
 			video.play();
 
@@ -230,8 +239,8 @@
 
 		function onDocumentMouseMove(event) {
 
-			mouse.x = (event.clientX - window.innerWidth / 2) * 8;
-			mouse.y = (event.clientY - window.innerHeight / 2) * 8;
+			mouse.x = (event.clientX - window.innerWidth / 2) * 4;
+			mouse.y = (event.clientY - window.innerHeight / 2) * 4;
 
 		}
 
