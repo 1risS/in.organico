@@ -178,7 +178,7 @@
 					'farClipping': { value: farClipping },
 
 					'pointSize': { value: 2 },
-					'zOffset': { value: 1000 }
+						'zOffset': { value: 1000 }
 
 				},
 				vertexShader: document.getElementById('vs').textContent,
@@ -203,6 +203,11 @@
 			video.play();
 
 			//
+			
+			enableMIDI();
+			subscribeToAllMIDIInputs();
+
+			//
 
 			renderer = new THREE.WebGLRenderer();
 			renderer.setPixelRatio(window.devicePixelRatio);
@@ -219,6 +224,34 @@
 
 		}
 
+function enableMIDI() {
+		WebMidi.enable(function (err) {
+			if (err) {
+				console.log("WebMidi could not be enabled.", err);
+			} else {
+				console.log("WebMidi enabled!");
+				console.log("Inputs:", WebMidi.inputs);
+			}
+	});
+}
+
+function subscribeToAllMIDIInputs() {
+	WebMidi.inputs.forEach(input => {
+		input.addListener("controlchange", "all", function (e) {
+			const ccn = e.controller.number;
+			const ccv = e.value;
+
+			if (ccn === 0) material.uniforms.nearClipping = rescale(ccv, 1, 1000);
+			if (ccn === 1) material.uniforms.farClipping = rescale(ccv, 1, 1000);
+			if (ccn === 2) material.uniforms.pointSize = rescale(ccv, 1, 10);
+			if (ccn === 3) material.uniforms.zOffset = rescale(ccv, 0, 4000);
+			if (ccn === 16) material.uniforms.uRandom = rescale(ccv, 0.0, 1.0);
+			if (ccn === 17) material.uniforms.uDepth = rescale(ccv, 0.0, 2.0);
+
+			onParamsChange();
+		});
+	});
+}
 		function onWindowResize() {
 
 			camera.aspect = window.innerWidth / window.innerHeight;
