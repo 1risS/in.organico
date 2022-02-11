@@ -15,6 +15,8 @@
 		<!-- <source src="textures/kinect.mp4"> -->
 	</video>
 
+	<script src="https://cdn.jsdelivr.net/npm/webmidi@2.5.1"></script>
+
 	<script id="vs" type="x-shader/x-vertex">
 			precision highp float;
 
@@ -178,17 +180,12 @@
 					'nearClipping': { value: nearClipping },
 					'farClipping': { value: farClipping },
 
-<<<<<<< HEAD
-					'pointSize': { value: 2 },
-						'zOffset': { value: 1000 }
-=======
 					'pointSize': { value: 1 },
 					'zOffset': { value: 1500 },
 					'clipX': { value: 0.5 },
 					'clipY': { value: 0.0 },
 					'clipWidthX': { value: 0.001 },
 					'clipWidthY': { value: 0.001 }
->>>>>>> ac7506a3fdc3e8752498375d6344562982b0b8b1
 
 				},
 				vertexShader: document.getElementById('vs').textContent,
@@ -219,7 +216,6 @@
 			//
 			
 			enableMIDI();
-			subscribeToAllMIDIInputs();
 
 			//
 
@@ -238,34 +234,38 @@
 
 		}
 
-function enableMIDI() {
-		WebMidi.enable(function (err) {
-			if (err) {
-				console.log("WebMidi could not be enabled.", err);
-			} else {
-				console.log("WebMidi enabled!");
-				console.log("Inputs:", WebMidi.inputs);
-			}
-	});
-}
+		function rescale(v, min, max) {
+			return (v / 127) * (max - min) + min;	
+		}
 
-function subscribeToAllMIDIInputs() {
-	WebMidi.inputs.forEach(input => {
-		input.addListener("controlchange", "all", function (e) {
-			const ccn = e.controller.number;
-			const ccv = e.value;
+		function enableMIDI() {
+				WebMidi.enable(function (err) {
+					if (err) {
+						console.log("WebMidi could not be enabled.", err);
+					} else {
+						console.log("WebMidi enabled!");
+						console.log("Inputs:", WebMidi.inputs);
+						subscribeToAllMIDIInputs();
+					}
+			});
+		}
 
-			if (ccn === 0) material.uniforms.nearClipping = rescale(ccv, 1, 1000);
-			if (ccn === 1) material.uniforms.farClipping = rescale(ccv, 1, 1000);
-			if (ccn === 2) material.uniforms.pointSize = rescale(ccv, 1, 10);
-			if (ccn === 3) material.uniforms.zOffset = rescale(ccv, 0, 4000);
-			if (ccn === 16) material.uniforms.uRandom = rescale(ccv, 0.0, 1.0);
-			if (ccn === 17) material.uniforms.uDepth = rescale(ccv, 0.0, 2.0);
-
-			onParamsChange();
-		});
-	});
-}
+		function subscribeToAllMIDIInputs() {
+			WebMidi.inputs.forEach(input => {
+				input.addListener("controlchange", "all", function (e) {
+					const ccn = e.controller.number;
+					if (ccn === 0) material.uniforms.nearClipping.value = rescale(ccv, 1, 10000);
+					if (ccn === 1) material.uniforms.farClipping.value = rescale(ccv, 1, 10000);
+					if (ccn === 2) material.uniforms.pointSize.value = rescale(ccv, 1, 10);
+					if (ccn === 3) material.uniforms.zOffset.value = rescale(ccv, 0, 4000);
+					if (ccn === 16) material.uniforms.uRandom.value = rescale(ccv, 0.0, 1.0);
+					if (ccn === 17) material.uniforms.uDepth.value = rescale(ccv, 0.0, 2.0);
+					if (ccn === 18) material.uniforms.clipX.value = rescale(ccv, 0.0, 1.0);
+					console.log(ccn,ccv);
+				});
+			});
+		}
+	
 		function onWindowResize() {
 
 			camera.aspect = window.innerWidth / window.innerHeight;
