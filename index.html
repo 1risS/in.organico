@@ -254,13 +254,17 @@
 			WebMidi.inputs.forEach(input => {
 				input.addListener("controlchange", "all", function (e) {
 					const ccn = e.controller.number;
+					const ccv = e.value;
+
 					if (ccn === 0) material.uniforms.nearClipping.value = rescale(ccv, 1, 10000);
 					if (ccn === 1) material.uniforms.farClipping.value = rescale(ccv, 1, 10000);
 					if (ccn === 2) material.uniforms.pointSize.value = rescale(ccv, 1, 10);
-					if (ccn === 3) material.uniforms.zOffset.value = rescale(ccv, 0, 4000);
+					if (ccn === 3) material.uniforms.zOffset.value = rescale(ccv, -2000, 2000);
 					if (ccn === 16) material.uniforms.uRandom.value = rescale(ccv, 0.0, 1.0);
 					if (ccn === 17) material.uniforms.uDepth.value = rescale(ccv, 0.0, 2.0);
 					if (ccn === 18) material.uniforms.clipX.value = rescale(ccv, 0.0, 1.0);
+					if (ccn === 19) mouse.x = rescale(ccv, 0.0, (window.innerWidth / 2	) * 4);
+					if (ccn === 20) mouse.y = rescale(ccv, 0.0, (window.innerHeight / 2	) * 4);
 					console.log(ccn,ccv);
 				});
 			});
@@ -292,8 +296,8 @@
 
 		function render(delta) {
 
-			camera.position.x += (mouse.x - camera.position.x) * 0.05;
-			camera.position.y += (- mouse.y - camera.position.y) * 0.05;
+			camera.position.x += (mouse.x - camera.position.x) * 0.5;
+			camera.position.y += (- mouse.y - camera.position.y) * 0.5;
 			camera.lookAt(center);
 
 			material.uniforms.time.value += delta;

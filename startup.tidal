@@ -76,6 +76,7 @@ let setI = streamSetI tidal
 :set prompt "tidal> "
 :set prompt-cont ""
 
+-- v1
 :{
 let m name num chan = p (name ++ show num) . (|< s "midi") . (|< midichan chan)
     mesh n v = m "mesh" n 1 $ ccv (range 0 127 v) # ccn n
@@ -85,4 +86,31 @@ let m name num chan = p (name ++ show num) . (|< s "midi") . (|< midichan chan)
     meshZoffset v = mesh 3 v
     meshUrandom v = mesh 16 v
     meshUdepth v = mesh 17 v
+    meshClipX v = mesh 18 v
 :}
+
+-- v2
+:{
+let mesh n p = superimpose ((# s "midi") . (# midichan 1) . (# ccv (range 0 127 p)) . (# ccn n) . (# nudge "-0.2"))
+    meshNearC = mesh 0
+    meshFarC = mesh 1
+    meshPointSize = mesh 2
+    meshZOffset = mesh 3
+    meshRandom = mesh 16
+    meshClipX = mesh 18
+    meshDepth = mesh 17
+:}
+
+{-
+  -- example:
+  d1
+    $ meshDepth (segment 64 $ cat ["0", "0", range 0 0.25 saw]) 
+    $ meshClipX saw 
+    $ cat [
+    s "house*4"
+    ,
+    s "house*6"
+    ,
+    s "hh*< [12 24 32 63]>"
+    ]
+-}
