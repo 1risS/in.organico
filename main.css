@@ -8,6 +8,10 @@ body {
   overscroll-behavior: none;
 }
 
+#video {
+  display: none;
+}
+
 #flok {
   position: fixed;
   top: 0;

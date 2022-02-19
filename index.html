@@ -13,9 +13,8 @@
 	<iframe id="flok" scrolling="no" frameborder="0"
 		src="https://flok.clic.cf/s/memoria-7de465ecb7abfa83?layout=tidal,hydra&noHydra=1&bgOpacity=0"></iframe>
 
-	<video id="video" loop muted crossorigin="anonymous" playsinline style="display:none">
+	<video id="video" loop muted crossorigin="anonymous" playsinline>
 		<source src="textures/examples_textures_kinect.webm">
-		<!-- <source src="textures/kinect.mp4"> -->
 	</video>
 
 	<div id="three"></div>
@@ -122,7 +121,7 @@
 		import { GUI } from './gui/lil-gui.module.min.js';
 
 		let scene, camera, renderer;
-		let geometry, mesh, material;
+		let geometry, mesh, material, texture;
 		let mouse, center;
 
 		init();
@@ -143,7 +142,7 @@
 
 			const video = document.getElementById('video');
 
-			const texture = new THREE.VideoTexture(video);
+			texture = new THREE.VideoTexture(video);
 			texture.minFilter = THREE.NearestFilter;
 
 			const width = 640, height = 480;
@@ -213,6 +212,7 @@
 			gui.add(material.uniforms.clipY, 'value', 0.0, 1.0, 0.001).name('clipY');
 			gui.add(material.uniforms.clipWidthX, 'value', 0.0, 1.0, 0.001).name('clipWidthX');
 			gui.add(material.uniforms.clipWidthY, 'value', 0.0, 1.0, 0.001).name('clipWidthY');
+			gui.close();
 
 			video.play();
 
@@ -234,6 +234,7 @@
 			//
 
 			initHydra(renderer);
+			initGlobals();
 
 			window.addEventListener('resize', onWindowResize);
 			window.addEventListener("message", handleFlokMessages, false);
@@ -249,6 +250,15 @@
 
 			// output threejs canvas to hydra canvas by default
 			src(s0).out()
+		}
+
+		function initGlobals() {
+			window.setVideo = (src) => {
+				const video = document.getElementById('video');
+				video.src = src;
+				video.play()
+				console.log("Video set to:", src);
+			}
 		}
 
 		function rescale(v, min, max) {
