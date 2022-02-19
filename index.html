@@ -214,7 +214,7 @@
 			video.play();
 
 			//
-			
+
 			enableMIDI();
 
 			//
@@ -235,18 +235,18 @@
 		}
 
 		function rescale(v, min, max) {
-			return (v / 127) * (max - min) + min;	
+			return (v / 127) * (max - min) + min;
 		}
 
 		function enableMIDI() {
-				WebMidi.enable(function (err) {
-					if (err) {
-						console.log("WebMidi could not be enabled.", err);
-					} else {
-						console.log("WebMidi enabled!");
-						console.log("Inputs:", WebMidi.inputs);
-						subscribeToAllMIDIInputs();
-					}
+			WebMidi.enable(function (err) {
+				if (err) {
+					console.log("WebMidi could not be enabled.", err);
+				} else {
+					console.log("WebMidi enabled!");
+					console.log("Inputs:", WebMidi.inputs);
+					subscribeToAllMIDIInputs();
+				}
 			});
 		}
 
@@ -263,13 +263,13 @@
 					if (ccn === 16) material.uniforms.uRandom.value = rescale(ccv, 0.0, 1.0);
 					if (ccn === 17) material.uniforms.uDepth.value = rescale(ccv, 0.0, 2.0);
 					if (ccn === 18) material.uniforms.clipX.value = rescale(ccv, 0.0, 1.0);
-					if (ccn === 19) mouse.x = rescale(ccv, 0.0, (window.innerWidth / 2	) * 4);
-					if (ccn === 20) mouse.y = rescale(ccv, 0.0, (window.innerHeight / 2	) * 4);
-					console.log(ccn,ccv);
+					if (ccn === 19) mouse.x = rescale(ccv, 0.0, (window.innerWidth / 2) * 4);
+					if (ccn === 20) mouse.y = rescale(ccv, 0.0, (window.innerHeight / 2) * 4);
+					console.log(ccn, ccv);
 				});
 			});
 		}
-	
+
 		function onWindowResize() {
 
 			camera.aspect = window.innerWidth / window.innerHeight;
