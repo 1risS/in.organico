@@ -14,7 +14,7 @@ body {
   left: 0;
   border: none;
   width: 100vw;
-  height: 100%;
+  height: calc(100vh - 16px);
   overflow: hidden;
 }
 
