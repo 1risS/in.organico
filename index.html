@@ -10,7 +10,7 @@
 
 <body>
 
-	<iframe class="flok" scrolling="no" frameborder="0"
+	<iframe id="flok" scrolling="no" frameborder="0"
 		src="https://flok.clic.cf/s/memoria-7de465ecb7abfa83?layout=tidal,hydra&noHydra=1&bgOpacity=0"></iframe>
 
 	<video id="video" loop muted crossorigin="anonymous" playsinline style="display:none">
@@ -18,7 +18,11 @@
 		<!-- <source src="textures/kinect.mp4"> -->
 	</video>
 
+	<div id="three"></div>
+	<canvas id="hydra" width="1280" height="720"></canvas>
+
 	<script src="https://cdn.jsdelivr.net/npm/webmidi@2.5.1"></script>
+	<script src="https://unpkg.com/hydra-synth"></script>
 
 	<script id="vs" type="x-shader/x-vertex">
 			precision highp float;
@@ -126,8 +130,9 @@
 
 		function init() {
 
-			const container = document.createElement('div');
-			document.body.appendChild(container);
+			// const container = document.createElement('div');
+			// document.body.appendChild(container);
+			const container = document.getElementById("three")
 
 			camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
 			camera.position.set(0, 0, 500);
@@ -228,9 +233,22 @@
 
 			//
 
+			initHydra(renderer);
+
 			window.addEventListener('resize', onWindowResize);
 			window.addEventListener("message", handleFlokMessages, false);
 
+		}
+
+		function initHydra(renderer) {
+			let canvas = document.getElementById("hydra");
+			let hydra = new Hydra({ canvas: canvas, detectAudio: false });
+
+			let threeCanvas = renderer.domElement;
+			s0.init({ src: threeCanvas })
+
+			// output threejs canvas to hydra canvas by default
+			src(s0).out()
 		}
 
 		function rescale(v, min, max) {
@@ -307,8 +325,19 @@
 		}
 
 		function handleFlokMessages(event) {
-			console.log("Message from flok:", event.data)
+			// console.log("Message from flok:", event.data)
+			const msg = event.data;
+			if (msg.cmd == "evaluateCode" && msg.args.target == "hydra") {
+				const body = msg.args.body;
+				console.log("Evaluate hydra:", body);
+				eval(body);
+			}
 		}
+
+	</script>
+
+	<script>
+
 
 	</script>
 </body>
