@@ -280,9 +280,10 @@
 					if (ccn === 16) material.uniforms.uRandom.value = rescale(ccv, 0.0, 1.0);
 					if (ccn === 17) material.uniforms.uDepth.value = rescale(ccv, 0.0, 2.0);
 					if (ccn === 18) material.uniforms.clipX.value = rescale(ccv, 0.0, 1.0);
-					if (ccn === 19) mouse.x = rescale(ccv, 0.0, (window.innerWidth / 2) * 4);
-					if (ccn === 20) mouse.y = rescale(ccv, 0.0, (window.innerHeight / 2) * 4);
-					console.log(ccn, ccv);
+					if (ccn === 21) material.uniforms.clipWidthX.value = rescale(ccv, 0.0, 1.0);
+					if (ccn === 19) mouse.x = rescale(ccv, 0.0, (window.innerWidth / 2	) * 4);
+					if (ccn === 20) mouse.y = rescale(ccv, 0.0, (window.innerHeight / 2	) * 4);
+					console.log(ccn,ccv);
 				});
 			});
 		}
