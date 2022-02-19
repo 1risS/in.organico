@@ -10,6 +10,9 @@
 
 <body>
 
+	<iframe class="flok" scrolling="no" frameborder="0"
+		src="https://flok.clic.cf/s/memoria-7de465ecb7abfa83?layout=tidal,hydra&noHydra=1&bgOpacity=0"></iframe>
+
 	<video id="video" loop muted crossorigin="anonymous" playsinline style="display:none">
 		<source src="textures/examples_textures_kinect.webm">
 		<!-- <source src="textures/kinect.mp4"> -->
@@ -126,11 +129,6 @@
 			const container = document.createElement('div');
 			document.body.appendChild(container);
 
-			const info = document.createElement('div');
-			info.id = 'info';
-			info.innerHTML = '<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - kinect';
-			document.body.appendChild(info);
-
 			camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
 			camera.position.set(0, 0, 500);
 
@@ -231,6 +229,7 @@
 			//
 
 			window.addEventListener('resize', onWindowResize);
+			window.addEventListener("message", handleFlokMessages, false);
 
 		}
 
@@ -305,6 +304,10 @@
 
 			renderer.render(scene, camera);
 
+		}
+
+		function handleFlokMessages(event) {
+			console.log("Message from flok:", event.data)
 		}
 
 	</script>
