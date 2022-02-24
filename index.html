@@ -229,7 +229,7 @@
 
 			mouse = new THREE.Vector3(0, 0, 1);
 
-			document.addEventListener('mousemove', onDocumentMouseMove);
+			//document.addEventListener('mousemove', onDocumentMouseMove);
 
 			//
 
@@ -287,12 +287,14 @@
 					if (ccn === 1) material.uniforms.farClipping.value = rescale(ccv, 1, 10000);
 					if (ccn === 2) material.uniforms.pointSize.value = rescale(ccv, 1, 10);
 					if (ccn === 3) material.uniforms.zOffset.value = rescale(ccv, -2000, 2000);
+					if (ccn === 4) material.uniforms.clipY.value = rescale(ccv, 0.0, 1.0);
 					if (ccn === 16) material.uniforms.uRandom.value = rescale(ccv, 0.0, 1.0);
 					if (ccn === 17) material.uniforms.uDepth.value = rescale(ccv, 0.0, 2.0);
 					if (ccn === 18) material.uniforms.clipX.value = rescale(ccv, 0.0, 1.0);
-					if (ccn === 21) material.uniforms.clipWidthX.value = rescale(ccv, 0.0, 1.0);
 					if (ccn === 19) mouse.x = rescale(ccv, 0.0, (window.innerWidth / 2	) * 4);
 					if (ccn === 20) mouse.y = rescale(ccv, 0.0, (window.innerHeight / 2	) * 4);
+					if (ccn === 21) material.uniforms.clipWidthX.value = rescale(ccv, 0.0, 1.0);
+					if (ccn === 22) material.uniforms.clipWidthY.value = rescale(ccv, 0.0, 1.0);
 					console.log(ccn,ccv);
 				});
 			});
@@ -307,12 +309,12 @@
 
 		}
 
-		function onDocumentMouseMove(event) {
+		// function onDocumentMouseMove(event) {
 
-			mouse.x = (event.clientX - window.innerWidth / 2) * 4;
-			mouse.y = (event.clientY - window.innerHeight / 2) * 4;
+		// 	mouse.x = (event.clientX - window.innerWidth / 2) * 4;
+		// 	mouse.y = (event.clientY - window.innerHeight / 2) * 4;
 
-		}
+		// }
 
 		function animate(delta) {
 
