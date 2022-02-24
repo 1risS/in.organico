@@ -1,0 +1,22 @@
+{
+  "name": "memoria",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "live-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1risS/kinect.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/1risS/kinect/issues"
+  },
+  "homepage": "https://github.com/1risS/kinect#readme",
+  "dependencies": {
+    "live-server": "^1.2.1"
+  }
+}
