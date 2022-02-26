@@ -7,7 +7,7 @@ import System.IO (hSetEncoding, stdout, utf8)
 hSetEncoding stdout utf8
 
 -- total latency = oLatency + cFrameTimespan
-tidal <- startTidal (superdirtTarget {oLatency = 0.3, oAddress = "127.0.0.1", oPort = 57120}) (defaultConfig {cVerbose = True, cFrameTimespan = 1/20})
+tidal <- startTidal (superdirtTarget {oLatency = 0.5, oAddress = "127.0.0.1", oPort = 57120}) (defaultConfig {cVerbose = True, cFrameTimespan = 1/5})
 
 :{
 let only = (hush >>)
@@ -19,6 +19,7 @@ let only = (hush >>)
     mute = streamMute tidal
     unmute = streamUnmute tidal
     unmuteAll = streamUnmuteAll tidal
+    unsoloAll = streamUnsoloAll tidal
     solo = streamSolo tidal
     unsolo = streamUnsolo tidal
     once = streamOnce tidal
@@ -39,6 +40,7 @@ let only = (hush >>)
     jumpIn i t = transition tidal True (Sound.Tidal.Transition.jumpIn t) i
     jumpIn' i t = transition tidal True (Sound.Tidal.Transition.jumpIn' t) i
     jumpMod i t = transition tidal True (Sound.Tidal.Transition.jumpMod t) i
+    jumpMod' i t p = transition tidal True (Sound.Tidal.Transition.jumpMod' t p) i
     mortal i lifespan release = transition tidal True (Sound.Tidal.Transition.mortal lifespan release) i
     interpolate i = transition tidal True (Sound.Tidal.Transition.interpolate) i
     interpolateIn i t = transition tidal True (Sound.Tidal.Transition.interpolateIn t) i
@@ -66,7 +68,8 @@ let only = (hush >>)
 :}
 
 :{
-let setI = streamSetI tidal
+let getState = streamGet tidal
+    setI = streamSetI tidal
     setF = streamSetF tidal
     setS = streamSetS tidal
     setR = streamSetR tidal
@@ -76,41 +79,24 @@ let setI = streamSetI tidal
 :set prompt "tidal> "
 :set prompt-cont ""
 
--- v1
-:{
-let m name num chan = p (name ++ show num) . (|< s "midi") . (|< midichan chan)
-    mesh n v = m "mesh" n 1 $ ccv (range 0 127 v) # ccn n
-    meshNearC v = mesh 0 v
-    meshFarC v = mesh 1 v
-    meshPointSize v = mesh 2 v
-    meshZoffset v = mesh 3 v
-    meshUrandom v = mesh 16 v
-    meshUdepth v = mesh 17 v
-    meshClipX v = mesh 18 v
-:}
+default (Pattern String, Integer, Double)
 
--- v2
+let del w t f o = delay w #delaytime t # delayfeedback f # orbit o
+
 :{
-let mesh n p = superimpose ((# s "midi") . (# midichan 1) . (# ccv (range 0 127 p)) . (# ccn n) . (# nudge "-0.2"))
-    meshNearC = mesh 0
-    meshFarC = mesh 1
+let mesh n p = (|< s "midi") . (|< midichan 1) . (|< ccn n) $ ccv (range 0 127 p)
+    sg = segment
+    st = struct
+    nearClipping = mesh 0
+    farClipping = mesh 1
     meshPointSize = mesh 2
-    meshZOffset = mesh 3
-    meshRandom = mesh 16
-    meshClipX = mesh 18
+    zOffset = mesh 3
+    hue = mesh 4
     meshDepth = mesh 17
+    meshClipX = mesh 18
+    meshClipY = mesh 19
+    x = mesh 20
+    y = mesh 21
+    lineWidthX = mesh 22
+    lineWidthY = mesh 23    
 :}
-
-{-
-  -- example:
-  d1
-    $ meshDepth (segment 64 $ cat ["0", "0", range 0 0.25 saw]) 
-    $ meshClipX saw 
-    $ cat [
-    s "house*4"
-    ,
-    s "house*6"
-    ,
-    s "hh*< [12 24 32 63]>"
-    ]
--}
