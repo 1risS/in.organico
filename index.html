@@ -245,7 +245,7 @@
 			mouse = new THREE.Vector3(0, 0, 1);
 
 			initHydra(renderer);
-			initGlobals();
+			extendHydra();
 
 			window.addEventListener('resize', onWindowResize);
 			window.addEventListener("message", handleFlokMessages, false);
@@ -263,7 +263,25 @@
 			src(s0).out()
 		}
 
-		function initGlobals() {
+		function extendHydra() {
+			const scenes = {};
+			window.scenes = scenes;
+
+			window.defScene = (id, cb) => {
+				if (id < 0 || id > 127) {
+					throw "scene id must be a number between 0 and 127, was " + id;
+				}
+				scenes[id] = cb;
+			}
+
+			window.playScene = (id) => {
+				const sceneFn = scenes[id];
+				if (!sceneFn) {
+					throw "scene id " + id + " not defined";
+				}
+				sceneFn();
+			}
+
 			window.setVideo = (src) => {
 				const video = document.getElementById('video');
 				video.src = src;
