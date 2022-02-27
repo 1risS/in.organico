@@ -245,7 +245,6 @@
 			mouse = new THREE.Vector3(0, 0, 1);
 
 			initHydra(renderer);
-			extendHydra();
 
 			window.addEventListener('resize', onWindowResize);
 			window.addEventListener("message", handleFlokMessages, false);
@@ -256,8 +255,12 @@
 			let canvas = document.getElementById("hydra");
 			let hydra = new Hydra({ canvas: canvas, detectAudio: false });
 
+			extendHydra();
+
 			let threeCanvas = renderer.domElement;
-			s0.init({ src: threeCanvas })
+			s0.init({ src: threeCanvas });
+
+			setImage("textures/monteConstanza-05.jpg");
 
 			// output threejs canvas to hydra canvas by default
 			src(s0).out()
