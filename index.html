@@ -11,7 +11,8 @@
 <body>
 
 	<iframe id="flok" scrolling="no" frameborder="0"
-		src="https://flok.clic.cf/s/memoria-7de465ecb7abfa83?layout=tidal,hydra&noHydra=1&bgOpacity=0" allow="geolocation"></iframe>
+		src="https://flok.clic.cf/s/memoria-7de465ecb7abfa83?layout=tidal,hydra&noHydra=1&bgOpacity=0"
+		allow="geolocation"></iframe>
 
 	<video id="video" loop muted crossorigin="anonymous" playsinline>
 		<source src="textures/examples_textures_kinect.webm">
@@ -267,7 +268,17 @@
 				const video = document.getElementById('video');
 				video.src = src;
 				video.play()
+				texture = new THREE.VideoTexture(video);
+				texture.minFilter = THREE.NearestFilter;
+				material.uniforms.map.value = texture;
 				console.log("Video set to:", src);
+			}
+
+			window.setImage = (src) => {
+				texture = new THREE.TextureLoader().load(src);
+				texture.minFilter = THREE.NearestFilter;
+				material.uniforms.map.value = texture;
+				console.log("Image set to:", src);
 			}
 		}
 
@@ -306,7 +317,7 @@
 					if (ccn === 21) mouse.y = rescale(ccv, -6000, 6000);
 					if (ccn === 22) material.uniforms.clipWidthX.value = rescale(ccv, 0.0, 1.0);
 					if (ccn === 23) material.uniforms.clipWidthY.value = rescale(ccv, 0.0, 1.0);
-					console.log(ccn,ccv);
+					console.log(ccn, ccv);
 				});
 			});
 		}
