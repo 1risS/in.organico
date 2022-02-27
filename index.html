@@ -282,7 +282,7 @@
 				if (!sceneFn) {
 					throw "scene id " + id + " not defined";
 				}
-				sceneFn();
+				if (currentScene !== id) sceneFn();
 				currentScene = id;
 			}
 
