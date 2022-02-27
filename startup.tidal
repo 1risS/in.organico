@@ -93,6 +93,7 @@ let mesh n p = (|< s "midi") . (|< midichan 1) . (|< ccn n) $ ccv (range 0 127 p
     meshPointSize = mesh 2
     zOffset = mesh 3
     hue = mesh 4
+    saturation = mesh 5
     meshDepth = mesh 17
     meshClipX = mesh 18
     meshClipY = mesh 19
