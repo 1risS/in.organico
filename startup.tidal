@@ -85,6 +85,7 @@ let del w t f o = delay w #delaytime t # delayfeedback f # orbit o
 
 :{
 let mesh n p = (|< s "midi") . (|< midichan 1) . (|< ccn n) $ ccv (range 0 127 p)
+    scene p = (|< s "midi") . (|< midichan 1) . (|< ccn 80) $ ccv p
     sg = segment
     st = struct
     nearClipping = mesh 0

@@ -335,6 +335,9 @@
 					if (ccn === 21) mouse.y = rescale(ccv, -6000, 6000);
 					if (ccn === 22) material.uniforms.clipWidthX.value = rescale(ccv, 0.0, 1.0);
 					if (ccn === 23) material.uniforms.clipWidthY.value = rescale(ccv, 0.0, 1.0);
+
+					if (ccn === 80) playScene(ccv);
+
 					console.log(ccn, ccv);
 				});
 			});
