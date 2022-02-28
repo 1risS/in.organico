@@ -1,6 +1,6 @@
 {
   "type": "tidal",
-  "hub": "wss://flok.clic.cf",
+  "hub": "ws://localhost:3000",
   "extra": {
     "bootScript": "startup.tidal"
   }
