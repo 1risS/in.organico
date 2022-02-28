@@ -19,6 +19,7 @@
 
 	<div id="three"></div>
 	<canvas id="hydra" width="1920" height="1080"></canvas>
+	<div id="error"></div>
 
 	<script src="https://cdn.jsdelivr.net/npm/webmidi@2.5.1"></script>
 	<script src="https://unpkg.com/hydra-synth"></script>
@@ -136,6 +137,7 @@
 		let scene, camera, renderer;
 		let geometry, mesh, material, texture;
 		let mouse, center;
+		let error = "";
 
 		init();
 		animate(0);
@@ -177,7 +179,6 @@
 			for (let i = 0; i < numPoints; i++) {
 				indices[i] = i;
 			}
-			console.log("indices:", indices)
 
 			geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
 			geometry.addAttribute('pindex', new THREE.InstancedBufferAttribute(indices, 1, false));
@@ -347,11 +348,10 @@
 					if (ccn === 23) material.uniforms.clipWidthY.value = rescale(ccv, 0.0, 1.0);
 
 					if (ccn === 80) {
-						console.log("ccn 80, ccv " + ccv);
 						setScene(ccv);
 					}
 
-					console.log(ccn, ccv);
+					console.debug("MIDI CC", ccn, "=", ccv);
 				});
 			});
 		}
@@ -380,19 +380,34 @@
 			camera.lookAt(center);
 
 			material.uniforms.time.value += delta;
-			// console.log("delta", delta)
 
 			renderer.render(scene, camera);
 
 		}
 
 		function handleFlokMessages(event) {
-			// console.log("Message from flok:", event.data)
 			const msg = event.data;
 			if (msg.cmd == "evaluateCode" && msg.args.target == "hydra") {
 				const body = msg.args.body;
 				console.log("Evaluate hydra:", body);
-				eval(body);
+				try {
+					setError("");
+					eval(body);
+				} catch (err) {
+					setError(err);
+				}
+			}
+		}
+
+		function setError(err) {
+			const el = document.getElementById("error");
+			if (err) {
+				console.log("Error:", err);
+				el.innerHTML = err;
+				el.classList.remove("hide");
+			} else {
+				el.innerHTML = "";
+				el.classList.add("hide");
 			}
 		}
 

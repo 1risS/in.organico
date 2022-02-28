@@ -120,3 +120,17 @@ select {
   margin-top: 20px;
   padding: 10px;
 }
+
+#error {
+  position: fixed;
+  bottom: 1em;
+  left: 1em;
+  background-color: rgb(255, 0, 0, 0.5);
+  color: #fff;
+  font-family: monospace;
+  font-size: 1rem;
+  padding: 0.25em;
+}
+.hide {
+  display: none;
+}
