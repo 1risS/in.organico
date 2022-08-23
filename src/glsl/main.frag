@@ -3,7 +3,7 @@ uniform float clipX;
 uniform float clipY;
 uniform float clipWidthX;
 uniform float clipWidthY;
-uniform float time;
+uniform float time; // unused
 uniform float hue;
 uniform float saturation;
 varying vec2 vUv;

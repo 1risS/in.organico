@@ -11,6 +11,9 @@ let scene, camera, renderer;
 let geometry, mesh, material, texture;
 let mouse, center;
 
+let mustRender = true;
+let alwaysRender = true;
+
 init();
 animate(0);
 
@@ -88,11 +91,11 @@ function init() {
 
   const gui = new GUI();
 
-  const positionFolder = gui.addFolder("Position")
+  const positionFolder = gui.addFolder("Position").onChange(() => { mustRender = true });
   positionFolder.add(mouse, 'x', -3000, 3000, 10).name('X');
   positionFolder.add(mouse, 'y', -6000, 6000, 20).name('Y');
 
-  const materialFolder = gui.addFolder("Material")
+  const materialFolder = gui.addFolder("Material").onChange(() => { mustRender = true });
   materialFolder.add(material.uniforms.nearClipping, 'value', 1, 10000, 1.0).name('Near Clipping');
   materialFolder.add(material.uniforms.farClipping, 'value', 1, 10000, 1.0).name('Far Clipping');
   materialFolder.add(material.uniforms.pointSize, 'value', 1, 10, 1.0).name('Point Size');
@@ -137,10 +140,10 @@ function initHydra(renderer) {
   let threeCanvas = renderer.domElement;
   s0.init({ src: threeCanvas });
 
-  setImage("textures/monteConstanza-05.jpg");
-
   // output threejs canvas to hydra canvas by default
   src(s0).out()
+
+  setImage("textures/monteConstanza-05.jpg");
 }
 
 function extendHydra() {
@@ -173,13 +176,21 @@ function extendHydra() {
     texture = new THREE.VideoTexture(video);
     texture.minFilter = THREE.NearestFilter;
     material.uniforms.map.value = texture;
+    alwaysRender = true;
     console.log("Video set to:", src);
   }
 
   window.setImage = (src) => {
-    texture = new THREE.TextureLoader().load(src);
-    texture.minFilter = THREE.NearestFilter;
-    material.uniforms.map.value = texture;
+    const loader = new THREE.TextureLoader()
+    const startTs = new Date();
+    loader.load(src, (texture) => {
+      texture.minFilter = THREE.NearestFilter;
+      material.uniforms.map.value = texture;
+      alwaysRender = false;
+      mustRender = true;
+      const endTs = new Date();
+      console.log(`Image ${src} took ${endTs - startTs} to load`);
+    });
     console.log("Image set to:", src);
   }
 }
@@ -225,6 +236,8 @@ function subscribeToAllMIDIInputs() {
         setScene(ccv);
       }
 
+      mustRender = true;
+
       console.debug("MIDI CC", ccn, "=", ccv);
     });
   });
@@ -240,17 +253,27 @@ function onWindowResize() {
 function animate(delta) {
   requestAnimationFrame(animate);
 
-  render(delta);
-}
-
-function render(delta) {
-  camera.position.x += (mouse.x - camera.position.x) * 0.5;
-  camera.position.y += (- mouse.y - camera.position.y) * 0.5;
-  camera.lookAt(center);
+  updateCameraPosition()
 
   material.uniforms.time.value += delta;
 
-  renderer.render(scene, camera);
+  if (alwaysRender || mustRender) {
+    renderer.render(scene, camera);
+    mustRender = false;
+    // console.debug("Render at", delta);
+  }
+}
+
+function updateCameraPosition() {
+  const newIncX = (mouse.x - camera.position.x) * 0.5;
+  const newIncY = (- mouse.y - camera.position.y) * 0.5;
+
+  if (newIncX || newIncY) {
+    camera.position.x += newIncX
+    camera.position.y += newIncY
+    camera.lookAt(center);
+    mustRender = true;
+  }
 }
 
 function handleFlokMessages(event) {
