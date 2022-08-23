@@ -89,21 +89,27 @@ function init() {
   mesh = new THREE.Points(geometry, material);
   scene.add(mesh);
 
+  mouse = new THREE.Vector3(0, 0, 1);
+
   const gui = new GUI();
 
+  const positionFolder = gui.addFolder("Position")
+  positionFolder.add(mouse, 'x', -3000, 3000, 10).name('X');
+  positionFolder.add(mouse, 'y', -6000, 6000, 20).name('Y');
+
   const materialFolder = gui.addFolder("Material")
-  materialFolder.add(material.uniforms.nearClipping, 'value', 1, 10000, 1.0).name('nearClipping');
-  materialFolder.add(material.uniforms.farClipping, 'value', 1, 10000, 1.0).name('farClipping');
-  materialFolder.add(material.uniforms.pointSize, 'value', 1, 10, 1.0).name('pointSize');
-  materialFolder.add(material.uniforms.zOffset, 'value', 0, 4000, 1.0).name('zOffset');
-  materialFolder.add(material.uniforms.uRandom, 'value', 0.0, 1.0, 0.001).name('random');
-  materialFolder.add(material.uniforms.uDepth, 'value', 0.0, 1.0, 0.0001).name('depth');
-  materialFolder.add(material.uniforms.clipX, 'value', 0.0, 1.0, 0.001).name('clipX');
-  materialFolder.add(material.uniforms.clipY, 'value', 0.0, 1.0, 0.001).name('clipY');
-  materialFolder.add(material.uniforms.clipWidthX, 'value', 0.0, 1.0, 0.001).name('clipWidthX');
-  materialFolder.add(material.uniforms.clipWidthY, 'value', 0.0, 1.0, 0.001).name('clipWidthY');
-  materialFolder.add(material.uniforms.hue, 'value', 0.0, 1.0, 0.001).name('hue');
-  materialFolder.add(material.uniforms.saturation, 'value', 0.0, 1.0, 0.001).name('saturation');
+  materialFolder.add(material.uniforms.nearClipping, 'value', 1, 10000, 1.0).name('Near Clipping');
+  materialFolder.add(material.uniforms.farClipping, 'value', 1, 10000, 1.0).name('Far Clipping');
+  materialFolder.add(material.uniforms.pointSize, 'value', 1, 10, 1.0).name('Point Size');
+  materialFolder.add(material.uniforms.zOffset, 'value', 0, 4000, 1.0).name('Z offset');
+  materialFolder.add(material.uniforms.uRandom, 'value', 0.0, 1.0, 0.001).name('Random');
+  materialFolder.add(material.uniforms.uDepth, 'value', 0.0, 1.0, 0.0001).name('Depth');
+  materialFolder.add(material.uniforms.clipX, 'value', 0.0, 1.0, 0.001).name('Clip X');
+  materialFolder.add(material.uniforms.clipY, 'value', 0.0, 1.0, 0.001).name('Clip Y');
+  materialFolder.add(material.uniforms.clipWidthX, 'value', 0.0, 1.0, 0.001).name('Clip Width X');
+  materialFolder.add(material.uniforms.clipWidthY, 'value', 0.0, 1.0, 0.001).name('Clip Width Y');
+  materialFolder.add(material.uniforms.hue, 'value', 0.0, 1.0, 0.001).name('Hue');
+  materialFolder.add(material.uniforms.saturation, 'value', 0.0, 1.0, 0.001).name('Saturation');
 
   gui.close();
 
@@ -119,8 +125,6 @@ function init() {
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
   container.appendChild(renderer.domElement);
-
-  mouse = new THREE.Vector3(0, 0, 1);
 
   initHydra(renderer);
 
