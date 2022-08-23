@@ -4,6 +4,9 @@ import { WebMidi } from 'webmidi'
 import GUI from 'lil-gui'
 import './style.css'
 
+import mainFragment from './glsl/main.frag'
+import mainVertex from './glsl/main.vert'
+
 let scene, camera, renderer;
 let geometry, mesh, material, texture;
 let mouse, center;
@@ -75,8 +78,8 @@ function init() {
       'clipWidthY': { value: 0 }
 
     },
-    vertexShader: document.getElementById('vs').textContent,
-    fragmentShader: document.getElementById('fs').textContent,
+    vertexShader: mainVertex,
+    fragmentShader: mainFragment,
     blending: THREE.AdditiveBlending,
     depthTest: false, depthWrite: false,
     transparent: true
