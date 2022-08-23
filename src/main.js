@@ -90,18 +90,21 @@ function init() {
   scene.add(mesh);
 
   const gui = new GUI();
-  gui.add(material.uniforms.nearClipping, 'value', 1, 10000, 1.0).name('nearClipping');
-  gui.add(material.uniforms.farClipping, 'value', 1, 10000, 1.0).name('farClipping');
-  gui.add(material.uniforms.pointSize, 'value', 1, 10, 1.0).name('pointSize');
-  gui.add(material.uniforms.zOffset, 'value', 0, 4000, 1.0).name('zOffset');
-  gui.add(material.uniforms.uRandom, 'value', 0.0, 1.0, 0.001).name('random');
-  gui.add(material.uniforms.uDepth, 'value', 0.0, 1.0, 0.0001).name('depth');
-  gui.add(material.uniforms.clipX, 'value', 0.0, 1.0, 0.001).name('clipX');
-  gui.add(material.uniforms.clipY, 'value', 0.0, 1.0, 0.001).name('clipY');
-  gui.add(material.uniforms.clipWidthX, 'value', 0.0, 1.0, 0.001).name('clipWidthX');
-  gui.add(material.uniforms.clipWidthY, 'value', 0.0, 1.0, 0.001).name('clipWidthY');
-  gui.add(material.uniforms.hue, 'value', 0.0, 1.0, 0.001).name('hue');
-  gui.add(material.uniforms.saturation, 'value', 0.0, 1.0, 0.001).name('saturation');
+
+  const materialFolder = gui.addFolder("Material")
+  materialFolder.add(material.uniforms.nearClipping, 'value', 1, 10000, 1.0).name('nearClipping');
+  materialFolder.add(material.uniforms.farClipping, 'value', 1, 10000, 1.0).name('farClipping');
+  materialFolder.add(material.uniforms.pointSize, 'value', 1, 10, 1.0).name('pointSize');
+  materialFolder.add(material.uniforms.zOffset, 'value', 0, 4000, 1.0).name('zOffset');
+  materialFolder.add(material.uniforms.uRandom, 'value', 0.0, 1.0, 0.001).name('random');
+  materialFolder.add(material.uniforms.uDepth, 'value', 0.0, 1.0, 0.0001).name('depth');
+  materialFolder.add(material.uniforms.clipX, 'value', 0.0, 1.0, 0.001).name('clipX');
+  materialFolder.add(material.uniforms.clipY, 'value', 0.0, 1.0, 0.001).name('clipY');
+  materialFolder.add(material.uniforms.clipWidthX, 'value', 0.0, 1.0, 0.001).name('clipWidthX');
+  materialFolder.add(material.uniforms.clipWidthY, 'value', 0.0, 1.0, 0.001).name('clipWidthY');
+  materialFolder.add(material.uniforms.hue, 'value', 0.0, 1.0, 0.001).name('hue');
+  materialFolder.add(material.uniforms.saturation, 'value', 0.0, 1.0, 0.001).name('saturation');
+
   gui.close();
 
   video.play();
