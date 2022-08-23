@@ -15,7 +15,6 @@ init();
 animate(0);
 
 function init() {
-
   // const container = document.createElement('div');
   // document.body.appendChild(container);
   const container = document.getElementById("three")
@@ -42,10 +41,8 @@ function init() {
   const indices = new Uint16Array(numPoints);
 
   for (let i = 0, j = 0, l = vertices.length; i < l; i += 3, j++) {
-
     vertices[i] = j % width;
     vertices[i + 1] = Math.floor(j / width);
-
   }
 
   for (let i = 0; i < numPoints; i++) {
@@ -56,7 +53,6 @@ function init() {
   geometry.setAttribute('pindex', new THREE.InstancedBufferAttribute(indices, 1, false));
 
   material = new THREE.ShaderMaterial({
-
     uniforms: {
       'time': { value: 0 },
       'hue': { value: 0.0 },
@@ -83,7 +79,6 @@ function init() {
     blending: THREE.AdditiveBlending,
     depthTest: false, depthWrite: false,
     transparent: true
-
   });
 
   mesh = new THREE.Points(geometry, material);
@@ -236,24 +231,19 @@ function subscribeToAllMIDIInputs() {
 }
 
 function onWindowResize() {
-
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
 
   renderer.setSize(window.innerWidth, window.innerHeight);
-
 }
 
 function animate(delta) {
-
   requestAnimationFrame(animate);
 
   render(delta);
-
 }
 
 function render(delta) {
-
   camera.position.x += (mouse.x - camera.position.x) * 0.5;
   camera.position.y += (- mouse.y - camera.position.y) * 0.5;
   camera.lookAt(center);
@@ -261,7 +251,6 @@ function render(delta) {
   material.uniforms.time.value += delta;
 
   renderer.render(scene, camera);
-
 }
 
 function handleFlokMessages(event) {
