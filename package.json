@@ -1,22 +1,24 @@
 {
-  "name": "memoria",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "live-server"
-  },
+  "name": "in.organico",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/1risS/kinect.git"
   },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/1risS/kinect/issues"
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
-  "homepage": "https://github.com/1risS/kinect#readme",
+  "devDependencies": {
+    "vite": "^3.0.7"
+  },
   "dependencies": {
-    "live-server": "^1.2.1"
+    "hydra-synth": "^1.3.18",
+    "lil-gui": "^0.17.0",
+    "three": "^0.143.0",
+    "webmidi": "^3.0.21"
   }
 }
