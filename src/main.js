@@ -171,11 +171,13 @@ function init() {
 
   window.addEventListener('resize', onWindowResize);
   window.addEventListener("message", handleFlokMessages, false);
-
 }
 
 function initHydra(renderer) {
   let canvas = document.getElementById("hydra");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
   hydra = new Hydra({ canvas: canvas, detectAudio: false });
 
   extendHydra();
@@ -229,7 +231,7 @@ function extendHydra() {
       alwaysRender = false;
       mustRender = true;
       const endTs = new Date();
-      console.log(`Image ${src} took ${endTs - startTs} to load`);
+      console.log(`Image ${src} took ${endTs - startTs}ms to load`);
     });
     console.log("Image set to:", src);
   }
