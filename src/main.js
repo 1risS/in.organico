@@ -56,6 +56,7 @@ function init() {
   const nearClipping = 850, farClipping = 4000;
 
   geometry = new THREE.BufferGeometry();
+  geometry.matrixAutoUpdate = false
 
   const numPoints = width * height;
   const vertices = new Float32Array(numPoints * 3);
@@ -141,6 +142,7 @@ function init() {
 
   renderer = new THREE.WebGLRenderer({
     powerPreference: "high-performance",
+    antialias: false,
   });
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
