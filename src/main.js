@@ -154,6 +154,7 @@ function init() {
   renderer = new THREE.WebGLRenderer({
     powerPreference: "high-performance",
     antialias: false,
+    stencil: false,
   });
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
