@@ -17,8 +17,8 @@ let mustRender = true;
 let alwaysRender = true;
 
 const stats = new Stats()
-const statsControl = {
-  toggle: () => {
+const controls = {
+  toggleStats: () => {
     const el = stats.dom
     if (!el) return
     if (el.classList.contains('hidden')) {
@@ -26,6 +26,9 @@ const statsControl = {
     } else {
       el.classList.add('hidden')
     }
+  },
+  resetThreeSource: () => {
+    s0.init({ src: renderer.domElement })
   }
 }
 
@@ -39,7 +42,7 @@ function init() {
 
   stats.showPanel(0)
   stats.dom.classList.add('stats')
-  statsControl.toggle()
+  controls.toggleStats()
   document.body.appendChild(stats.dom)
 
   camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
@@ -140,7 +143,8 @@ function init() {
   materialFolder.add(material.uniforms.hue, 'value', 0.0, 1.0, 0.001).name('Hue');
   materialFolder.add(material.uniforms.saturation, 'value', 0.0, 1.0, 0.001).name('Saturation');
 
-  gui.add(statsControl, 'toggle').name('Toggle Stats');
+  gui.add(controls, 'toggleStats').name('Toggle Stats');
+  gui.add(controls, 'resetThreeSource').name('Set s0 to ThreeJS renderer');
 
   gui.close();
 
@@ -173,7 +177,7 @@ function initHydra(renderer) {
   hydra = new Hydra({ canvas: canvas, detectAudio: false });
 
   extendHydra();
-  initThreeSource();
+  resetThreeSource();
 
   // output threejs canvas to hydra canvas by default
   src(s0).out()
@@ -186,9 +190,7 @@ function extendHydra() {
   let currentScene = null;
   window.scenes = scenes;
 
-  window.initThreeSource = () => {
-    s0.init({ src: renderer.domElement })
-  }
+  window.resetThreeSource = controls.resetThreeSource
 
   window.defScene = (id, cb) => {
     if (id < 0 || id > 127) {
