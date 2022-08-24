@@ -173,9 +173,7 @@ function initHydra(renderer) {
   hydra = new Hydra({ canvas: canvas, detectAudio: false });
 
   extendHydra();
-
-  let threeCanvas = renderer.domElement;
-  s0.init({ src: threeCanvas });
+  initThreeSource();
 
   // output threejs canvas to hydra canvas by default
   src(s0).out()
@@ -187,6 +185,10 @@ function extendHydra() {
   const scenes = {};
   let currentScene = null;
   window.scenes = scenes;
+
+  window.initThreeSource = () => {
+    s0.init({ src: renderer.domElement })
+  }
 
   window.defScene = (id, cb) => {
     if (id < 0 || id > 127) {
