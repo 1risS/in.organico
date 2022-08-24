@@ -11,6 +11,7 @@ import mainVertex from './glsl/main.vert'
 let scene, camera, renderer;
 let geometry, mesh, material, texture;
 let mouse, center;
+let hydra;
 
 let mustRender = true;
 let alwaysRender = true;
@@ -169,7 +170,7 @@ function init() {
 
 function initHydra(renderer) {
   let canvas = document.getElementById("hydra");
-  let hydra = new Hydra({ canvas: canvas, detectAudio: false });
+  hydra = new Hydra({ canvas: canvas, detectAudio: false });
 
   extendHydra();
 
@@ -280,7 +281,8 @@ function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
 
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  hydra.setResolution(window.innerWidth, window.innerHeight);
+
   mustRender = true;
 }
 
