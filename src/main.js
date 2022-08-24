@@ -36,9 +36,10 @@ function init() {
   // document.body.appendChild(container);
   const container = document.getElementById("three")
 
-  stats.showPanel(0);
-  document.body.appendChild(stats.dom);
+  stats.showPanel(0)
+  stats.dom.classList.add('stats')
   statsControl.toggle()
+  document.body.appendChild(stats.dom)
 
   camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
   camera.position.set(0, 0, 500);
