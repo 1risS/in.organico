@@ -167,6 +167,8 @@ function init() {
 
   initHydra(renderer);
 
+  setError("");
+
   window.addEventListener('resize', onWindowResize);
   window.addEventListener("message", handleFlokMessages, false);
 
