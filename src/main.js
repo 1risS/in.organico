@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import Hydra from 'hydra-synth/dist/hydra-synth'
 import { WebMidi } from 'webmidi'
 import GUI from 'lil-gui'
+import Stats from 'stats.js'
 import './style.css'
 
 import mainFragment from './glsl/main.frag'
@@ -14,6 +15,19 @@ let mouse, center;
 let mustRender = true;
 let alwaysRender = true;
 
+const stats = new Stats()
+const statsControl = {
+  toggle: () => {
+    const el = stats.dom
+    if (!el) return
+    if (el.classList.contains('hidden')) {
+      el.classList.remove('hidden')
+    } else {
+      el.classList.add('hidden')
+    }
+  }
+}
+
 init();
 animate(0);
 
@@ -21,6 +35,10 @@ function init() {
   // const container = document.createElement('div');
   // document.body.appendChild(container);
   const container = document.getElementById("three")
+
+  stats.showPanel(0);
+  document.body.appendChild(stats.dom);
+  statsControl.toggle()
 
   camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
   camera.position.set(0, 0, 500);
@@ -109,6 +127,8 @@ function init() {
   materialFolder.add(material.uniforms.hue, 'value', 0.0, 1.0, 0.001).name('Hue');
   materialFolder.add(material.uniforms.saturation, 'value', 0.0, 1.0, 0.001).name('Saturation');
 
+  gui.add(statsControl, 'toggle').name('Toggle Stats');
+
   gui.close();
 
   video.play();
@@ -145,7 +165,7 @@ function initHydra(renderer) {
   // output threejs canvas to hydra canvas by default
   src(s0).out()
 
-  setImage("textures/monteConstanza-05.jpg");
+  setImage("images/monteConstanza-05.jpg");
 }
 
 function extendHydra() {
@@ -255,6 +275,8 @@ function onWindowResize() {
 function animate(delta) {
   requestAnimationFrame(animate);
 
+  stats.begin();
+
   updateCameraPosition()
 
   material.uniforms.time.value += delta;
@@ -264,6 +286,8 @@ function animate(delta) {
     mustRender = false;
     // console.debug("Render at", delta);
   }
+
+  stats.end();
 }
 
 function updateCameraPosition() {

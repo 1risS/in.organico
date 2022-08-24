@@ -8,6 +8,10 @@ body {
   overscroll-behavior: none;
 }
 
+.hidden {
+  display: none;
+}
+
 #video {
   display: none;
 }
@@ -62,7 +66,8 @@ button {
   -ms-user-select: none;
   user-select: none;
   pointer-events: none;
-  z-index: 1; /* TODO Solve this in HTML */
+  z-index: 1;
+  /* TODO Solve this in HTML */
 }
 
 a,
@@ -73,7 +78,8 @@ select {
 }
 
 .lil-gui {
-  z-index: 2 !important; /* TODO Solve this in HTML */
+  z-index: 2 !important;
+  /* TODO Solve this in HTML */
 }
 
 @media all and (max-width: 640px) {
@@ -131,6 +137,7 @@ select {
   font-size: 1rem;
   padding: 0.25em;
 }
+
 .hide {
   display: none;
 }
