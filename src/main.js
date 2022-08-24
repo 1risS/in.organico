@@ -48,10 +48,20 @@ function init() {
   center = new THREE.Vector3();
   center.z = - 1000;
 
-  const video = document.getElementById('video');
+  texture = new THREE.Texture();
 
-  texture = new THREE.VideoTexture(video);
-  texture.minFilter = THREE.NearestFilter;
+  const video = document.getElementById('video');
+  // Automatically create a VideoTexture when video is loaded, disposing the old texture
+  video.addEventListener('loadeddata', () => {
+    video.play();
+    console.log("Video loaded")
+    texture = new THREE.VideoTexture(video);
+    texture.minFilter = THREE.NearestFilter;
+    const prevTexture = material.uniforms.map.value;
+    material.uniforms.map.value = texture;
+    if (prevTexture) prevTexture.dispose()
+    alwaysRender = true;
+  });
 
   const width = 640, height = 480;
   const nearClipping = 850, farClipping = 4000;
@@ -197,11 +207,6 @@ function extendHydra() {
   window.setVideo = (src) => {
     const video = document.getElementById('video');
     video.src = src;
-    video.play()
-    texture = new THREE.VideoTexture(video);
-    texture.minFilter = THREE.NearestFilter;
-    material.uniforms.map.value = texture;
-    alwaysRender = true;
     console.log("Video set to:", src);
   }
 
@@ -210,7 +215,9 @@ function extendHydra() {
     const startTs = new Date();
     loader.load(src, (texture) => {
       texture.minFilter = THREE.NearestFilter;
+      const prevTexture = material.uniforms.map.value;
       material.uniforms.map.value = texture;
+      if (prevTexture) prevTexture.dispose()
       alwaysRender = false;
       mustRender = true;
       const endTs = new Date();
@@ -273,6 +280,7 @@ function onWindowResize() {
   camera.updateProjectionMatrix();
 
   renderer.setSize(window.innerWidth, window.innerHeight);
+  mustRender = true;
 }
 
 function animate(delta) {
