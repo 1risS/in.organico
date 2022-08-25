@@ -7,7 +7,8 @@ import System.IO (hSetEncoding, stdout, utf8)
 hSetEncoding stdout utf8
 
 -- total latency = oLatency + cFrameTimespan
-tidal <- startTidal (superdirtTarget {oLatency = 0.5, oAddress = "127.0.0.1", oPort = 57120}) (defaultConfig {cVerbose = True, cFrameTimespan = 1/5})
+--tidal <- startTidal (superdirtTarget {oLatency = 0.5, oAddress = "127.0.0.1", oPort = 57120}) (defaultConfig {cVerbose = True, cFrameTimespan = 1/5})
+tidal <- startTidal (superdirtTarget {oLatency = 0.05, oAddress = "127.0.0.1", oPort = 57120}) (defaultConfig {cVerbose = True, cFrameTimespan = 1/20})
 
 :{
 let only = (hush >>)
@@ -76,11 +77,6 @@ let getState = streamGet tidal
     setB = streamSetB tidal
 :}
 
-:set prompt "tidal> "
-:set prompt-cont ""
-
-default (Pattern String, Integer, Double)
-
 let del w t f o = delay w #delaytime t # delayfeedback f # orbit o
 
 :{
@@ -102,3 +98,8 @@ let mesh n p = (|< s "midi") . (|< midichan 1) . (|< ccn n) $ ccv (range 0 127 p
     lineWidthX = mesh 22
     lineWidthY = mesh 23    
 :}
+
+:set prompt "tidal> "
+:set prompt-cont ""
+
+default (Pattern String, Integer, Double)
