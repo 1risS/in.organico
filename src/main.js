@@ -196,12 +196,17 @@ function extendHydra() {
   let currentScene = null;
   window.scenes = scenes;
   let _rms = {}
+  let _rmsCallbacks = {}
   
   oscRms = new OSC();
   oscRms.on('/rms', msg => {
     console.debug("RMS:", msg.args)
     const orbit = msg.args[2]
-    _rms[orbit] = msg.args[3]
+    const value = msg.args[3]
+    _rms[orbit] = value
+    if (_rmsCallbacks[orbit]) {
+      _rmsCallbacks[orbit](value)
+    }
   })
   oscRms.open();
 
@@ -249,6 +254,10 @@ function extendHydra() {
 
   window.rms = (orbit) => {
     return _rms[orbit] || 0
+  }
+
+  window.onRms = (cb, orbit) => {
+    _rmsCallbacks[orbit] = cb
   }
 }
 
