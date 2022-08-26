@@ -2,6 +2,6 @@
   "type": "tidal",
   "hub": "ws://localhost:3000",
   "extra": {
-    "bootScript": "startup.tidal"
+    "bootScript": "startup.hs"
   }
 }
