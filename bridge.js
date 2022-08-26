@@ -7,9 +7,9 @@ const config = {
 }
 const osc = new OSC({ plugin: new OSC.BridgePlugin(config) })
 
-osc.on('/rms', message => {
-  console.log("RMS", message.args)
-})
+// osc.on('/rms', message => {
+//   console.log("RMS", message.args)
+// })
 
 osc.on('open', () => {
   console.log(`Port ${config.wsServer.port} is open now.`)

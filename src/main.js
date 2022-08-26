@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import Hydra from 'hydra-synth/dist/hydra-synth'
 import { WebMidi } from 'webmidi'
+import OSC from 'osc-js'
 import GUI from 'lil-gui'
 import Stats from 'stats.js'
 import './style.css'
@@ -12,6 +13,7 @@ let scene, camera, renderer;
 let geometry, mesh, material, texture;
 let mouse, center;
 let hydra;
+let oscRms;
 
 let mustRender = true;
 let alwaysRender = true;
@@ -193,6 +195,15 @@ function extendHydra() {
   const scenes = {};
   let currentScene = null;
   window.scenes = scenes;
+  let _rms = {}
+  
+  oscRms = new OSC();
+  oscRms.on('/rms', msg => {
+    console.debug("RMS:", msg.args)
+    const orbit = msg.args[2]
+    _rms[orbit] = msg.args[3]
+  })
+  oscRms.open();
 
   window.resetThreeSource = controls.resetThreeSource
 
@@ -234,6 +245,10 @@ function extendHydra() {
       console.log(`Image ${src} took ${endTs - startTs}ms to load`);
     });
     console.log("Image set to:", src);
+  }
+
+  window.rms = (orbit) => {
+    return _rms[orbit] || 0
   }
 }
 

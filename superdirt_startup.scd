@@ -25,6 +25,7 @@ s.reboot { // server options are only updated on reboot
 		~basepath = thisProcess.nowExecutingPath.dirname;
 
 		(~basepath +/+ "setup_midi.scd").load;
+		(~basepath +/+ "setup_rms.scd").load;
 	};
 
 	s.latency = 0.3; // increase this if you get "late" messages

@@ -5,5 +5,5 @@ MIDIClient.init;
 ~dirt.soundLibrary.addMIDI(\midi, ~midiOut);
 ~midiOut.latency = 0.0;
 
-"MIDI setup!".postln;
+"MIDI ready!".postln;
 )
