@@ -29,9 +29,7 @@ const controls = {
       el.classList.add('hidden')
     }
   },
-  resetThreeSource: () => {
-    s0.init({ src: renderer.domElement })
-  }
+  panic: () => _panic()
 }
 
 init();
@@ -146,7 +144,7 @@ function init() {
   materialFolder.add(material.uniforms.saturation, 'value', 0.0, 1.0, 0.001).name('Saturation');
 
   gui.add(controls, 'toggleStats').name('Toggle Stats');
-  gui.add(controls, 'resetThreeSource').name('Set s0 to ThreeJS renderer');
+  gui.add(controls, 'panic').name('PANIC!');
 
   gui.close();
 
@@ -191,6 +189,17 @@ function initHydra(renderer) {
   setImage("images/monteConstanza-05.jpg");
 }
 
+function resetThreeSource() {
+  s0.init({ src: renderer.domElement })
+}
+
+function _panic() {
+  resetThreeSource()
+  setError("PANIC!")
+  setTimeout(() => setError(""), 500)
+  console.log("PANIC")
+}
+
 function extendHydra() {
   const scenes = {};
   let currentScene = null;
@@ -211,6 +220,8 @@ function extendHydra() {
   oscRms.open();
 
   window.resetThreeSource = controls.resetThreeSource
+
+  window.panic = _panic
 
   window.defScene = (id, cb) => {
     if (id < 0 || id > 127) {
