@@ -12,8 +12,12 @@ import mainVertex from './glsl/main.vert'
 let scene, camera, renderer;
 let geometry, mesh, material, texture;
 let mouse, center;
-let hydra;
 let oscRms;
+
+const _scenes = {};
+let _currentScene = null;
+let _rms = {}
+let _rmsCallbacks = {}
 
 let mustRender = true;
 let alwaysRender = true;
@@ -178,7 +182,19 @@ function initHydra(renderer) {
   canvas.width = 2560;
   canvas.height = 1600;
 
-  hydra = new Hydra({ canvas: canvas, detectAudio: false });
+  const _hydra = new Hydra({ canvas: canvas, detectAudio: false });
+
+  oscRms = new OSC();
+  oscRms.on('/rms', msg => {
+    console.debug("RMS:", msg.args)
+    const orbit = msg.args[2]
+    const value = msg.args[3]
+    _rms[orbit] = value
+    if (_rmsCallbacks[orbit]) {
+      _rmsCallbacks[orbit](value)
+    }
+  })
+  oscRms.open();
 
   extendHydra();
   resetThreeSource();
@@ -201,44 +217,26 @@ function _panic() {
 }
 
 function extendHydra() {
-  const scenes = {};
-  let currentScene = null;
-  window.scenes = scenes;
-  let _rms = {}
-  let _rmsCallbacks = {}
-  
-  oscRms = new OSC();
-  oscRms.on('/rms', msg => {
-    console.debug("RMS:", msg.args)
-    const orbit = msg.args[2]
-    const value = msg.args[3]
-    _rms[orbit] = value
-    if (_rmsCallbacks[orbit]) {
-      _rmsCallbacks[orbit](value)
-    }
-  })
-  oscRms.open();
-
+  window.scenes = _scenes;
   window.resetThreeSource = controls.resetThreeSource
-
-  window.panic = _panic
+  window.panic = controls.panic
 
   window.defScene = (id, cb) => {
     if (id < 0 || id > 127) {
       throw "scene id must be a number between 0 and 127, was " + id;
     }
-    scenes[id] = cb;
+    _scenes[id] = cb;
     // If we are redefining currently playing scene, re-play it
-    if (currentScene == id) cb();
+    if (_currentScene == id) cb();
   }
 
   window.setScene = (id) => {
-    const sceneFn = scenes[id];
+    const sceneFn = _scenes[id];
     if (!sceneFn) {
       throw "scene id " + id + " not defined";
     }
-    if (currentScene !== id) sceneFn();
-    currentScene = id;
+    if (_currentScene !== id) sceneFn();
+    _currentScene = id;
   }
 
   window.setVideo = (src) => {
