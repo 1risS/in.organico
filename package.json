@@ -12,7 +12,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "prepare": "yarn build",
-    "start": "static-serve dist/ -p 3001"
+    "start": "static-serve dist/ -p 3001",
+    "bridge": "node bridge.js"
   },
   "devDependencies": {
     "static-serve": "^0.0.1",
