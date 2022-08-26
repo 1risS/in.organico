@@ -175,8 +175,8 @@ function init() {
 
 function initHydra(renderer) {
   let canvas = document.getElementById("hydra");
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  canvas.width = 2560;
+  canvas.height = 1600;
 
   hydra = new Hydra({ canvas: canvas, detectAudio: false });
 
@@ -288,8 +288,6 @@ function subscribeToAllMIDIInputs() {
 function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
-
-  hydra.setResolution(window.innerWidth, window.innerHeight);
 
   mustRender = true;
 }
