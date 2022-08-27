@@ -202,7 +202,7 @@ function initHydra(renderer) {
   // output threejs canvas to hydra canvas by default
   src(s0).out()
 
-  setImage("images/monteConstanza-05.jpg");
+  setImage("textures/monteConstanza-05.jpg");
 }
 
 function resetThreeSource() {
