@@ -186,7 +186,7 @@ function initHydra(renderer) {
 
   oscRms = new OSC();
   oscRms.on('/rms', msg => {
-    console.debug("RMS:", msg.args)
+    // console.debug("RMS:", msg.args)
     const orbit = msg.args[2]
     const value = msg.args[3]
     _rms[orbit] = value
@@ -271,7 +271,7 @@ function extendHydra() {
 }
 
 function rescale(v, min, max) {
-  return (v / 127) * (max - min) + min;
+  return v * (max - min) + min;
 }
 
 function enableMIDI() {
@@ -308,7 +308,8 @@ function subscribeToAllMIDIInputs() {
       if (ccn === 23) material.uniforms.clipWidthY.value = rescale(ccv, 0.0, 1.0);
 
       if (ccn === 80) {
-        setScene(ccv);
+        const sceneId = Math.floor(ccv * 127)
+        setScene(sceneId);
       }
 
       mustRender = true;
@@ -337,7 +338,7 @@ function animate(delta) {
   if (alwaysRender || mustRender) {
     renderer.render(scene, camera);
     mustRender = false;
-    // console.debug("Render at", delta);
+    console.debug("Render at", delta);
   }
 
   stats.end();
