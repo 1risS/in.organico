@@ -13,6 +13,7 @@ let scene, camera, renderer;
 let geometry, mesh, material, texture;
 let mouse, center;
 let oscRms;
+let counters = { 'midi': 0, 'ws': 0 };
 
 const _scenes = {};
 let _currentScene = null;
@@ -173,6 +174,8 @@ function init() {
 
   setError("");
 
+  setInterval(updateAndResetCounters, 1000);
+
   window.addEventListener('resize', onWindowResize);
   window.addEventListener("message", handleFlokMessages, false);
 }
@@ -201,6 +204,7 @@ function initHydra(renderer) {
     if (_rmsCallbacks[orbit]) {
       _rmsCallbacks[orbit](value)
     }
+    counters['ws'] += 1
   })
   oscRms.open();
 
@@ -298,15 +302,29 @@ function enableMIDI() {
 
 function setStatus(kind, value, opts) {
   const elem = document.getElementById(`status-${kind}`);
+  const counterElem = document.getElementById(`counter-${kind}`)
   if (opts?.error) {
     elem.classList.add("error")
+    counterElem.classList.add("error")
   } else {
     elem.classList.remove("error")
+    counterElem.classList.remove("error")
   }
-  elem.setAttribute("title", opts?.desc)
+  elem.setAttribute("title", opts?.desc || '')
   elem.innerText = value
 }
 
+function updateCounter(kind) {
+  const elem = document.getElementById(`counter-${kind}`)
+  elem.innerText = counters[kind]
+}
+
+function updateAndResetCounters() {
+  updateCounter('midi')
+  updateCounter('ws')
+  counters['midi'] = 0
+  counters['ws'] = 0
+}
 
 function subscribeToAllMIDIInputs() {
   WebMidi.inputs.forEach(input => {
@@ -337,6 +355,7 @@ function subscribeToAllMIDIInputs() {
       mustRender = true;
 
       console.debug("MIDI CC", ccn, "=", ccv);
+      counters['midi'] += 1
     });
   });
 }
