@@ -46,6 +46,19 @@ body {
   z-index: -1;
 }
 
+#status {
+  font-size: 10px;
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  color: #ccc;
+  cursor: default;
+}
+
+#status .error {
+  color: red;
+}
+
 a {
   color: #ff0;
   text-decoration: none;

@@ -185,6 +185,14 @@ function initHydra(renderer) {
   const _hydra = new Hydra({ canvas: canvas, detectAudio: false });
 
   oscRms = new OSC();
+  oscRms.on('open', () => {
+    setStatus("ws", "WS");
+    console.log('WS connected')
+  })
+  oscRms.on('close', () => {
+    setStatus("ws", "WS", { error: true })
+    console.log('WS disconnected')
+  })
   oscRms.on('/rms', msg => {
     // console.debug("RMS:", msg.args)
     const orbit = msg.args[2]
@@ -277,14 +285,28 @@ function rescale(v, min, max) {
 function enableMIDI() {
   WebMidi.enable(function (err) {
     if (err) {
-      console.log("WebMidi could not be enabled.", err);
+      console.error("WebMidi could not be enabled.", err);
     } else {
       console.log("WebMidi enabled!");
       console.log("Inputs:", WebMidi.inputs);
       subscribeToAllMIDIInputs();
+      const inputs = WebMidi.inputs.map(input => input.name).join(", ")
+      setStatus("midi", "MIDI", { desc: inputs });
     }
   });
 }
+
+function setStatus(kind, value, opts) {
+  const elem = document.getElementById(`status-${kind}`);
+  if (opts?.error) {
+    elem.classList.add("error")
+  } else {
+    elem.classList.remove("error")
+  }
+  elem.setAttribute("title", opts?.desc)
+  elem.innerText = value
+}
+
 
 function subscribeToAllMIDIInputs() {
   WebMidi.inputs.forEach(input => {
