@@ -1,6 +1,6 @@
 (
 // Run this to start sending the RMS OSC messages to SC.
-~dirt.startSendRMS;
+~dirt.startSendRMS(60, 0.4);
 
 ~dirt.orbits.collect { |orbit, i|
 	// Set default reply rate and peak lag (this can also be set on the event itself (i.e. Tidal)
